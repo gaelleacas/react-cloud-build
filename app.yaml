@@ -1,25 +1,9 @@
-steps:
-- name: 'gcr.io/cloud-builders/yarn'
-  args: ['install']
-# Generate .env to build react app.
-- name: 'gcr.io/cloud-builders/yarn'
-  volumes:
-  - name: 'appbuild'
-    path: '/appbuild'
-  entrypoint: 'sh'
-  args:
-  - '-c'
-  - |
-    yarn build && \
-    cp -R /workspace/build /appbuild/ && \
-    cp /workspace/app.yaml /appbuild/
-- name: 'gcr.io/cloud-builders/gcloud'
-  volumes:
-  - name: 'appbuild'
-    path: '/appbuild'
-  entrypoint: 'sh'
-  args:
-  - '-c'
-  - |
-    cd /appbuild && \
-    gcloud app deploy
+runtime: python37
+
+handlers:
+- url: /
+  static_files: build/index.html
+  upload: build/index.html
+  secure: always
+- url: /
+  static_dir: build

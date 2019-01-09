@@ -4,7 +4,7 @@ steps:
 # Generate .env to build react app.
 - name: 'gcr.io/cloud-builders/yarn'
   args: ["build"]
-- name: "gcr.io/cloud-builders/gcloud"
-  args: ["app", "deploy"]
+# - name: "gcr.io/cloud-builders/gcloud"
+#   args: ["app", "deploy"]
 
 timeout: "1600s"

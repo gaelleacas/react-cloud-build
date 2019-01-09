@@ -1,0 +1,51 @@
+steps:
+- name: 'gcr.io/cloud-builders/gsutil'
+  id: copy_build_cache
+  # we use rsync and not cp so that this step doesn't fail the first time it's run
+  args: ['rsync', 'gs://${_CACHE_BUCKET}/', '/build_cache']
+  volumes:
+  - name: 'build_cache'
+    path: '/build_cache'
+
+- name: 'eu.gcr.io/$PROJECT_ID/tar'
+  id: extract_build_cache
+  waitFor: ['copy_build_cache']
+  # This might fail the first time, but that's okay
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    tar xpzf /build_cache/cache.tgz -C /build_cache || echo "No cache found."
+    cp -Rf /build_cache/workspace/* /workspace/ || echo "No cache."
+  volumes:
+  - name: 'build_cache'
+    path: '/build_cache'
+
+- name: 'gcr.io/cloud-builders/yarn'
+  id: yarn_install
+  args: ['install']
+  waitFor:
+    - extract_build_cache
+  volumes:
+  - name: 'build_cache'
+    path: '/build_cache'
+
+
+# Compress the gradle build cache
+- name: 'eu.gcr.io/$PROJECT_ID/tar'
+  id: compress_cache
+  args: ['cpzf', '/build_cache/cache.tgz', '/workspace/node_modules']
+  waitFor: ['yarn_install']
+  volumes:
+  - name: 'build_cache'
+    path: '/build_cache'
+
+# Store the build cache
+- name: gcr.io/cloud-builders/gsutil
+  args: ['cp', '/build_cache/cache.tgz', 'gs://${_CACHE_BUCKET}/cache.tgz']
+  waitFor: ['compress_cache']
+  volumes:
+  - name: 'build_cache'
+    path: '/build_cache'
+
+timeout: 1800s

@@ -30,12 +30,12 @@ jobs:
           name: Yarn Build
           command: |
             yarn build
-      - run: mkdir -p workspace
-      - run:
-          name: Move build to workspace (shared /w next job)
-          command: |
-            cp -R build ./workspace
-            cp app.yaml ./workspace
+      # - run: mkdir -p workspace
+      # - run:
+      #     name: Move build to workspace (shared /w next job)
+      #     command: |
+      #       cp -R build ./workspace
+      #       cp app.yaml ./workspace
       # - run:
       #     name: Store Service Account
       #     command: |

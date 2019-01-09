@@ -1,9 +1,15 @@
 steps:
-- name: 'gcr.io/cloud-builders/yarn'
+- name: node:10.10.0
+  entrypoint: yarn
   args: ['install']
+# - name: 'gcr.io/cloud-builders/yarn'
+#   args: ['install']
 # Generate .env to build react app.
-- name: 'gcr.io/cloud-builders/yarn'
-  args: ["build"]
+- name: node:10.10.0
+  entrypoint: yarn
+  args: ['build']
+# - name: 'gcr.io/cloud-builders/yarn'
+#   args: ["build"]
 # - name: "gcr.io/cloud-builders/gcloud"
 #   args: ["app", "deploy"]
 

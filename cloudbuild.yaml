@@ -13,6 +13,5 @@ steps:
     'app', 
     'deploy',
     'app.yaml',
-    '--version=$COMMIT_SHA',
-    '--image-url=eu.gcr.io/$PROJECT_ID/react-cloud-build:${COMMIT_SHA}'
+    '--version=$COMMIT_SHA'
     ]

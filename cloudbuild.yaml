@@ -5,8 +5,14 @@ steps:
 
 - name: 'gcr.io/cloud-builders/yarn'
   id: yarn_build
-  args: ["build"]
+  args: ['build']
 
-- name: "gcr.io/cloud-builders/gcloud"
+- name: 'gcr.io/cloud-builders/gcloud'
   id: deploy
-  args: ["app", "deploy"]
+  args: [
+    'app', 
+    'deploy',
+    'app.yaml',
+    '--version=$COMMIT_SHA',
+    '--image-url=eu.gcr.io/$PROJECT_ID/react-cloud-build:${COMMIT_SHA}'
+    ]
